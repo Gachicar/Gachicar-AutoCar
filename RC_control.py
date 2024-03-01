@@ -82,7 +82,7 @@ def send(sock):
     global check, block
     while True:
         if check == 1 and block == 2: #장애물
-            #print("장애물")
+            print("장애물 감지")  
             sendData = 6
             sock.send(sendData.to_bytes(4, byteorder="little"))
         elif check == 1 and block == 0:
@@ -135,6 +135,7 @@ try:
         time.sleep(1)
         pass
         if check == 1 and cnt == 0:
+            print("차량 주행 시작")
             driver.start()
             cnt = 1
         if check == -1:
@@ -150,34 +151,3 @@ except error as e:
     print("연결 오류")
     server_sock.close()
     client_sock.close()
-
-# finally:
-#     print("서버 종료")
-#     server_sock.close()
-    
-
-    # RC카 서버와 소켓 연결
-    # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # client_socket.connect((SERVER_IP, SERVER_PORT))
-    # print("Connected to server")
-
-#     while True:
-#         # 사용자로부터 메시지 입력 받기
-#         message = input("Enter message to send to server (type 'quit' to exit): ")
-
-#         # 메시지 전송
-#         client_socket.sendall(message.encode())
-
-#         # 'quit'을 입력하면 클라이언트 종료
-#         if message.lower() == 'quit':
-#             break
-
-#         # 서버로부터 응답 받기
-#         response = client_socket.recv(1024)
-#         print("Received from server:", response.decode())
-
-# except ConnectionRefusedError:
-#     print("Failed to connect to the server")
-# finally:
-#     # 소켓 닫기
-#     client_socket.close()
