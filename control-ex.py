@@ -10,7 +10,7 @@ RC카와 연결은 X
 """
 # RC카 서버의 IP 주소와 포트 번호
 host = 'localhost'  # 예: '192.168.0.100'
-port = 9999  # 예: 8080
+port = 9851  # 예: 8080
 
 block = 0
 check = 0
@@ -88,34 +88,6 @@ try:
 except error as e:
     print(e)
     print("연결 오류")
+
+if 'server_sock' in locals():
     server_sock.close()
-# finally:
-#     print("서버 종료")
-#     server_sock.close()
-    
-
-    # RC카 서버와 소켓 연결
-    # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # client_socket.connect((SERVER_IP, SERVER_PORT))
-    # print("Connected to server")
-
-#     while True:
-#         # 사용자로부터 메시지 입력 받기
-#         message = input("Enter message to send to server (type 'quit' to exit): ")
-
-#         # 메시지 전송
-#         client_socket.sendall(message.encode())
-
-#         # 'quit'을 입력하면 클라이언트 종료
-#         if message.lower() == 'quit':
-#             break
-
-#         # 서버로부터 응답 받기
-#         response = client_socket.recv(1024)
-#         print("Received from server:", response.decode())
-
-# except ConnectionRefusedError:
-#     print("Failed to connect to the server")
-# finally:
-#     # 소켓 닫기
-#     client_socket.close()

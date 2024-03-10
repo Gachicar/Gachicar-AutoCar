@@ -34,7 +34,7 @@ ac.setSpeed(20)
 """
 
 # RC카 서버의 IP 주소와 포트 번호
-host = 'localhost'  # 예: '192.168.0.100'
+host = ''  # 예: '192.168.0.100'
 port = 9999  # 예: 8080
 
 block = 0
