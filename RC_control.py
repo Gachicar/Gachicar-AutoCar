@@ -39,10 +39,12 @@ port = 9851  # 예: 8080
 
 block = 0
 check = 0
+obj = 0
+arrived = 0
 
 def handle_client(client_sock):
-    block = 0
-    check = 0
+    # block = 0
+    # check = 0
     
     def drive(value, value2):   # value는 라인 트래킹 value값, value2는 장애물 회피 value값
         print("----------drive: 차량 주행 코드----------")
@@ -66,19 +68,36 @@ def handle_client(client_sock):
             ac.backward()
 
     def cardrive():
+        global LF, OF, CA, check, arrvied
         print("----------cardrive: 차량 주행----------")
         try:
             while True:# 의자, 사람, 우산 객체를 탐지하는 루프 
                 v = OF.detect(index='chair') 
                 v2 = OF.detect(index='person')
                 v3 = OF.detect(index='umbrella')
-                if v or v2 or v3: # 의자, 사람, 우산 중 하나가 감지되면 멈춤.
+                # if v or v2 or v3: # 의자, 사람, 우산 중 하나가 감지되면 멈춤.
+                #     ac.stop()
+                if obj == 1 and v:
+                    print("의자 감지")
+                    arrvied = 1
+                    ac.stop()
+                elif obj == 2 and v2:
+                    print("사람 감지")
+                    arrvied = 2
+                    ac.stop()
+                elif obj == 3 and v3:
+                    print("우산 감지")
+                    arrvied = 3
                     ac.stop()
                 else:
                     # 세개 중 하나도 해당되는 것이 없으면 라인트랙킹 진행.
-                    value = LF.run()
-                    value2 = CA.run()
-                    drive(value, value2)
+                    value = LF.run()    # 라인트래킹
+                    value2 = CA.run()   # 장애물 회피
+                    drive(value, value2)    # 차량 주행
+                    
+                    if check == -1:
+                        ac.stop()
+                        break
         except KeyboardInterrupt:
             ac.stop() # 키보드로 진행 멈춤
         
@@ -90,32 +109,58 @@ def handle_client(client_sock):
                 sendData = 6
                 sock.send(sendData.to_bytes(4, byteorder="little"))
             elif check == 1 and block == 0:
-                sendData = 7
+                if arrived != 0:
+                    if arrived == 1:
+                        print("집으로 이동 완료")
+                        sendData = 1
+                    elif arrived == 2:
+                        print("회사로 이동 완료")
+                        sendData = 2
+                    elif arrived == 3:
+                        print("학교로 이동 완료")
+                        sendData = 3
+                    sock.send(sendData.to_bytes(4, byteorder="little"))
+                    check = -1
+                else:
+                    sendData = 7
                 sock.send(sendData.to_bytes(4, byteorder="little"))
+            
+
 
     def receive(sock):
-        global check
+        global check, obj
         while True:
             data = sock.recv(1024)
             checkdata = data.decode("utf-8")
             print(checkdata)
-            print(checkdata[:-1])
-            if checkdata[:-1] == "시작":
+            # print(checkdata[:-1])
+            command = checkdata[:-1]
+            if command == "시작":
                 check = 1
-                print(checkdata[:-1])
-                
-            elif checkdata[:-1] == "종료":
+                print("주행을 시작합니다.")
+            elif command == "집":
+                check = 1
+                obj = 1
+                print("집으로 이동합니다.")
+            elif command == "회사":
+                check = 1
+                obj = 2
+                print("회사로 이동합니다.")
+            elif command == "학교":
+                check = 1
+                obj = 3
+                print("학교로 이동합니다.")
+            elif command == "종료":
                 check = -1
-                print(checkdata[:-1])
+                print("주행을 종료합니다.")
                 break
-            elif checkdata[:-1] == "정지":
+            elif command == "정지":
                 print("정지합니다.")
-                Car.setSpeed(0)
+                ac.setSpeed(0)
                 check = 0
-                print(checkdata[:-1])
             elif int.from_bytes(data, byteorder='big') != 0:
-                speed = int(checkdata[:-1])
-                Car.setSpeed(speed)
+                speed = int(command)
+                ac.setSpeed(speed)
                 print("속도", speed)
 
     sender = threading.Thread(target=send, args=(client_sock,))
@@ -125,14 +170,21 @@ def handle_client(client_sock):
     sender.start()
     receiver.start()
 
-    cnt = 0
+    cnt = 0     # 차량 주행 시작 여부 확인(0: 정지, 1: 주행 중)
     while True:
         if check == 1 and cnt == 0:
             print("차량 주행 시작")
+            if obj == 1:
+                print("집으로 이동합니다.")
+            elif obj == 2:
+                print("회사로 이동합니다.")
+            elif obj == 3:
+                print("학교로 이동합니다.")
             driver.start()
             cnt = 1
+
         if check == -1:
-            print("-----------------정지-----------------")
+            print("-----------------종료-----------------")
             cnt = 0
             break
         
