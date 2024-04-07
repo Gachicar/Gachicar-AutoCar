@@ -59,7 +59,7 @@ def drive(value, value2):   # value는 라인 트래킹 value값, value2는 장�
             if value2 >= 0.5:    # 0.5 초과 시 후진
                 block = 1
                 ac.backward()
-#             time.sleep(1)  # 수정
+
 
 def object_detection():
     global dest_obj, destination, arrived
@@ -76,6 +76,7 @@ def object_detection():
                     if v.get('size_rate', 0) >= 0.25:
                         print(index + " 감지", v.get('size_rate', 0))
                         arrived = destination
+                        ac.stop()
                         break   # 0407 추가
 
                 # 객체 감지 주기 조정
@@ -109,8 +110,7 @@ def cardrive():
     global arrived
     print("----------Cardrive: Autonomous Driving----------")
     try:
-        while check != -1:  # check가 -1이 아닐 때만 실행
-#             if check == 1:
+        while check != -1 and arrived is None:  # check가 -1이 아닐 때만 실행
             # 객체 감지 및 라인 트래킹을 동시에 수행하는 로직
             object_detection_thread = threading.Thread(target=object_detection)
             line_tracking_thread = threading.Thread(target=line_tracking)
@@ -122,6 +122,9 @@ def cardrive():
             line_tracking_thread.join()  # 쓰레드가 종료될 때까지 기다립니다.
 
             time.sleep(0.1)  # 예시로 0.1초에 한 번씩 주요 작업 수행
+        if arrived is not None:
+            ac.stop()
+            
     except KeyboardInterrupt:
         pass
     finally:
