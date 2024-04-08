@@ -3,6 +3,14 @@ from socket import *
 import time
 from pop import Pilot
 
+"""_summary_
+    최종 코드
+    - 라인트래킹 + 장애물 회피 + 객체 인식
+    - 소켓 통신으로 제어
+    - 목적지를 구체적으로 설정하여 이동 -> 설정된 객체 인식 시 정지 후 도착 알림
+    - 장애물 감지 시 후진 및 알림
+"""
+
 cam = Pilot.Camera(width=300, height=300)
 ac = Pilot.AutoCar()
 OF = Pilot.Object_Follow(cam)

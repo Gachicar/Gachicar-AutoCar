@@ -1,4 +1,6 @@
-""" RC카 작동 대신 print문으로 대체 """
+""" RC카 작동 대신 print문으로 대체 
+    - success.py code 변형
+"""
 
 from socket import socket, AF_INET, SOCK_STREAM
 import threading

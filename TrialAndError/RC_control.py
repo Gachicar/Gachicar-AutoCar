@@ -1,12 +1,14 @@
 import threading
 from socket import *
 from select import *
-import time
 from pop import Pilot
 
 
 """
     라인트래킹 + 객체인식 + 장애물 회피
+    - 3가지 기능을 합친 코드
+    - 소켓 통신으로 제어
+    - 목적지를 구체적으로 설정하여 이동
 """
 
 cam = Pilot.Camera(width=300, height=300)
@@ -43,8 +45,6 @@ obj = 0
 arrived = 0
 
 def handle_client(client_sock):
-    # block = 0
-    # check = 0
     
     def drive(value, value2):   # value는 라인 트래킹 value값, value2는 장애물 회피 value값
         print("----------drive: 차량 주행 코드----------")
@@ -75,8 +75,7 @@ def handle_client(client_sock):
                 v = OF.detect(index='chair') 
                 v2 = OF.detect(index='person')
                 v3 = OF.detect(index='umbrella')
-                # if v or v2 or v3: # 의자, 사람, 우산 중 하나가 감지되면 멈춤.
-                #     ac.stop()
+
                 if obj == 1 and v:
                     print("의자 감지")
                     arrvied = 1
@@ -133,7 +132,6 @@ def handle_client(client_sock):
             data = sock.recv(1024)
             checkdata = data.decode("utf-8")
             print(checkdata)
-            # print(checkdata[:-1])
             command = checkdata[:-1]
             if command == "시작":
                 check = 1

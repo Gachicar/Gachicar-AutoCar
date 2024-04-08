@@ -3,6 +3,11 @@ from socket import *
 import time
 from pop import Pilot
 
+"""
+    소켓 통신으로 명령을 받아 RC카를 주행시키는 코드
+    - 목적지를 구체적으로 설정하여 이동
+"""
+
 # 라인트래킹 + 객체인식 + 장애물 회피 설정
 cam = Pilot.Camera(width=300, height=300)
 ac = Pilot.AutoCar()
