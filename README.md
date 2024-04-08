@@ -1,4 +1,4 @@
-# Gachicar-RC-Client
+# Gachicar-AutoCar
 - '가치카' 프로젝트 AI AutoCar 주행 코드
 - 서버와의 소켓 통신으로 제어
 - 소켓으로 목적지 전송 시 해당 목적지로 이동
