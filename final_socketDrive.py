@@ -18,7 +18,7 @@ LF = Pilot.Track_Follow(camera=cam)
 CA = Pilot.Collision_Avoid(cam)
 
 # 저장된 모델 3개를 불러오기
-LF.load_model("line_tracer_0313_2.pth") # 라인트래킹 모델 로드
+LF.load_model("track_follow_model.pth") # 라인트래킹 모델 로드
 OF.load_model() # 객체 인식 모델 불러오기 ("ssd_mobilenet_v2_coco.engine"를 자동으로 불러옴)
 CA.load_model("collision_final.pth") # 장애물 회피 모델 로드
 
