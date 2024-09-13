@@ -23,7 +23,7 @@ LF = Pilot.Track_Follow(camera=cam)
 CA = Pilot.Collision_Avoid(cam)
 
 # 모델 로드
-LF.load_model("line_tracer_0313_2.pth")
+LF.load_model("track_follow_model.pth")
 OF.load_model()
 CA.load_model("collision_final.pth")
 
